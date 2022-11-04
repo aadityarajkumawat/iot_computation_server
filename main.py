@@ -1,6 +1,6 @@
 from flask import Flask, request
-
 from validators.pulse_data_validator import pulse_data_validator
+from ml.knn import KNN
 
 app = Flask(__name__)
 
@@ -23,7 +23,7 @@ def home():
 def heart_pulse_data():
     response_type = {"data": {}, "error": None}
 
-    body: dict = request.json
+    body = request.json
 
     if not pulse_data_validator(body):
         response_type["error"] = "Invalid Data, try again!"
@@ -31,6 +31,11 @@ def heart_pulse_data():
 
     return body
 
+@app.route("/ml")
+def ML():
+    KNN()
+
 if __name__ == "__main__":
     from waitress import serve
+    ML()
     serve(app, host='0.0.0.0', port=3000)
