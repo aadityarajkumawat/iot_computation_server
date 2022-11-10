@@ -20,7 +20,7 @@ def home():
     </div>
     """
 
-@app.route("/heart_pulse_data")
+@app.route("/heart_pulse_data", methods = ['POST'])
 def heart_pulse_data():
     response_type = {"data": {}, "error": None}
 
@@ -43,5 +43,5 @@ def ML():
 
 if __name__ == "__main__":
     from waitress import serve
-    # serve(app, host='0.0.0.0', port=3000)
-    app.run()
+    serve(app, host='0.0.0.0', port=3005)
+    
