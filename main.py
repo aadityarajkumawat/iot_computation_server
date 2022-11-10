@@ -1,6 +1,7 @@
 from flask import Flask, request
 from validators.pulse_data_validator import pulse_data_validator
 from ml.knn import KNN
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -25,17 +26,22 @@ def heart_pulse_data():
 
     body = request.json
 
-    if not pulse_data_validator(body):
-        response_type["error"] = "Invalid Data, try again!"
-        return response_type
+    df = pd.read_csv('./train.csv')
 
-    return body
+    a = (df.iloc[[-1]])
+    last_idx = (a['sno'].sum()) + 1
+
+    f = open('./train.csv', 'a')
+    f.write(str(last_idx) + ',' + str(body['heart_pulse']) + ',0,6\n')
+    f.close()
+
+    return 'OK'
 
 @app.route("/ml")
 def ML():
-    KNN()
+    pass
 
 if __name__ == "__main__":
     from waitress import serve
-    ML()
-    serve(app, host='0.0.0.0', port=3000)
+    # serve(app, host='0.0.0.0', port=3000)
+    app.run()
