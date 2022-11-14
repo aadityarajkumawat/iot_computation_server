@@ -3,6 +3,7 @@ from validators.pulse_data_validator import pulse_data_validator
 from ml.knn import KNN
 import pandas as pd
 import pymongo
+import time
 
 app = Flask(__name__)
 
@@ -33,7 +34,7 @@ def data():
 @app.route("/heart_pulse_data", methods = ['POST'])
 def heart_pulse_data():
     body = request.json
-    db.get_collection('pulse_rate').insert_one({'heart_pulse': body['heart_pulse'], 'timestamp': body['timestamp']})
+    db.get_collection('pulse_rate').insert_one({'heart_pulse': body['heart_pulse'], 'timestamp': time.time()})
     return 'OK'
 
 @app.route("/ml")
