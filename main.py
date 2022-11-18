@@ -27,14 +27,21 @@ def home():
 
 @app.route('/data')
 def data():
-    data = db.get_collection('pulse_rate').find()
+    data = db.get_collection('pulse_rate').find().limit(10).sort({"timestamp": 1})
     return render_template('data.html', data=data)
     
 
 @app.route("/heart_pulse_data", methods = ['POST'])
 def heart_pulse_data():
     body = request.json
-    db.get_collection('pulse_rate').insert_one({'heart_pulse': body['heart_pulse'], 'timestamp': time.time()})
+    
+    heart_pulse = body['heart_pulse']
+    time = body['timestamp']
+
+    if heart_pulse <= 35 or heart_pulse >= 160:
+        return 'OUTLIER'
+
+    db.get_collection('pulse_rate').insert_one({'heart_pulse': heart_pulse, 'timestamp': time})
     return 'OK'
 
 @app.route("/ml")
@@ -44,4 +51,3 @@ def ML():
 if __name__ == "__main__":
     from waitress import serve
     serve(app, host='0.0.0.0', port=3005)
-    
